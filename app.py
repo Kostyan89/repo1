@@ -12,15 +12,10 @@ def index():
         return render_template("main-all-items.html", entities=entities)
 
 
-@app.route('/paging')
-def paging():
-    return render_template("main.html")
-
-
-@app.route('/search')
+@app.route('/search/')
 def search():
     model = request.args.get('model')
-    with open('entities.json') as f:
+    with open('entities.json', encoding='utf8') as f:
         entities = json.load(f)
         response = []
         if not model:
@@ -28,14 +23,14 @@ def search():
         else:
             for x in model.split(" "):
                 for e in entities:
-                    if e["model"] == x.lower():
+                    if x.lower() in e["model"]:
                         response.append(e)
         return render_template("search_ause.html", entities=response)
 
 
 @app.route('/card/<int:eid>')
 def card(eid: int):
-    with open('entities.json') as f:
+    with open('entities.json', encoding='utf8') as f:
         entities = json.load(f)
         for ent in entities:
             if ent["id"] == eid:
@@ -44,7 +39,7 @@ def card(eid: int):
 
 @app.route('/card_short/<int:eid>')
 def card_short(eid: int):
-    with open('entities.json') as f:
+    with open('entities.json', encoding='utf8') as f:
         entities = json.load(f)
         for ent in entities:
             if ent["id"] == eid:
@@ -52,12 +47,11 @@ def card_short(eid: int):
 
 
 @app.route('/paging/<int:paging>')
-def paging(eid: int):
-    with open('entities.json') as f:
+def paging(paging: int):
+    entities = ""
+    with open('entities.json', encoding='utf8') as f:
         entities = json.load(f)
-        for ent in entities:
-            if ent["id"] == eid:
-                return render_template("paging.html", entity=ent, page=paging)
+    return render_template("paging.html", entities=entities, page=paging)
 
 
 if __name__ == '__main__':
