@@ -26,9 +26,10 @@ def search():
         if not model:
             response = entities
         else:
-            for e in entities:
-                if e["model"] == model:
-                    response.append(e)
+            for x in model.split(" "):
+                for e in entities:
+                    if e["model"] == x.lower():
+                        response.append(e)
         return render_template("search_ause.html", entities=response)
 
 
@@ -48,6 +49,15 @@ def card_short(eid: int):
         for ent in entities:
             if ent["id"] == eid:
                 return render_template("card_short.html", entity=ent)
+
+
+@app.route('/paging/<int:paging>')
+def paging(eid: int):
+    with open('entities.json') as f:
+        entities = json.load(f)
+        for ent in entities:
+            if ent["id"] == eid:
+                return render_template("paging.html", entity=ent, page=paging)
 
 
 if __name__ == '__main__':
